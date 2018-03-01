@@ -2,6 +2,8 @@ var User = require('../models/user')
 var Playlist = require('../models/playlist')
 var Song = require('../models/song')
 
+var router = require('express').Router()
+
 router.get('/users/:userId/playlists', getPlaylistsByUser)
 
 function getPlaylistsByUser(req, res, next) {
