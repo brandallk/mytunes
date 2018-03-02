@@ -3,8 +3,8 @@ var expressSession = require('express-session')
 var mongoStore = require('connect-mongodb-session')(expressSession)
 
 // Details for database hosted on mLab
-var user = 'mytunesadmin' // username for the db's user
-var pswd = 'dogsrunningONfreeway?' // password of that db user
+var user = 'adminformytunes' // username for the db's user
+var pswd = 'codeworkscheckpoint' // password of that db user
 var connectionStr = `mongodb://${user}:${pswd}@ds012578.mlab.com:12578/mytunes` // url for the hosted mongo database
 
 // Configure a new session store
