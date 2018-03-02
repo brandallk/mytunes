@@ -14,12 +14,12 @@ var schema = new Schema({
     },
     createdAt: {
         type: Number,
-        required: true,
+        // required: true,
         default: Date.now()
     },
     imgUrl: {
       type: String,
-      required: true,
+    //   required: true,
       default: 'http://placehold.it/200x200'
     },
     userId: { // ID of the user who creates a Movie

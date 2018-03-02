@@ -27,8 +27,11 @@ function getPlaylist(req, res, next) {
 }
 
 function createPlaylist(req, res, next) {
-  Playlist.create(req.params.body)
+  Playlist.create(req.body)
     .then(playlist => {
+      if (!playlist) {
+        return res.send({message: "Failed to create playlist", reqBody: req.body})
+      }
       return res.send({message: "Successfully created playlist", data: playlist})
     })
     .catch(next)

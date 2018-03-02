@@ -3,7 +3,7 @@
     <topbar></topbar>
     <navbar v-on:hideSearch="hideSearch" v-on:showSearch="showSearch"></navbar>
     <search v-if="displaySearch"></search>
-    <player></player>
+    <player v-if="!displaySearch"></player>
   </div>
 </template>
 

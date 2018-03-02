@@ -23,7 +23,8 @@ export default new vuex.Store({
   state: {
     iTunesResults: [],
     user: {},
-    authError: {error: false, msg: ""}
+    authError: {error: false, msg: ""},
+    playlists: []
   },
 
   mutations: {
@@ -35,6 +36,9 @@ export default new vuex.Store({
     },
     setAuthError(state, msg) {
       state.authError = {error: true, message: msg}
+    },
+    setPlaylists(state, playlists) {
+      state.playlists = playlists
     }
   },
 
@@ -46,7 +50,7 @@ export default new vuex.Store({
       var apiUrl = url + encodeURIComponent(url2)
       axios.get(apiUrl)
            .then(results => {
-             commit('setItunesResults', results)
+             commit('setItunesResults', results.data.results)
            })
            .catch(err => {
              console.log(err)
@@ -112,8 +116,54 @@ export default new vuex.Store({
             console.log(err)
             dispatch('logoutUser')
           })
-    }
+    },
 
     // API
+    getUserPlaylists({commit, dispatch}) {
+      api.get('playlists')
+         .then(res => {
+           var playlists = res.data
+           console.log('playlists:', playlists)
+           commit('setPlaylists', playlists)
+         })
+         .catch(err => {
+           console.log(err)
+         })
+    },
+
+    addSongToPlaylist({commit, dispatch}, song) {
+      if (song.playlistId === "") {
+        var newPlaylist = {
+          title: "Untitled Playlist",
+          desc: "***",
+          userId: song.userId
+        }
+        api.post('playlists', newPlaylist)
+           .then(res => {
+             var playlist = res.data.data
+             console.log('new playlist:', playlist)
+             song.playlistId = playlist._id
+             api.post('songs', song)
+                .then(res => {
+                  var newSong = res.data.data
+                  console.log('new song:', newSong)
+                  dispatch('getUserPlaylists')
+                })
+           })
+           .catch(err => {
+             console.log(err)
+           })
+      } else {
+        api.post('songs', song)
+           .then(res => {
+             var newSong = res.data.data
+             console.log('new song:', newSong)
+           })
+           .catch(err => {
+             console.log(err)
+           })
+      }
+    }
+
   }
 })

@@ -1,14 +1,18 @@
 <template>
     <div class="search">
-        Search
+        <searchForm></searchForm>
+        <searchResults></searchResults>
     </div>
   </template>
   
   <script>
+    import SearchForm from './SearchForm'
+    import SearchResults from './SearchResults'
     export default {
-      name: 'Search',
+      name: 'SearchForm',
       components: {
-        
+        searchForm: SearchForm,
+        searchResults: SearchResults
       },
       data () {
         return {
