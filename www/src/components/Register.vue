@@ -7,7 +7,15 @@
         <div class="form-group">
             <label for="name">name: </label>
             <input type="text" id="name" name="name" v-model="user.name" class="form-control">
-          </div>
+        </div>
+        <div class="form-group">
+            <label for="imageUrl">photo URL: </label>
+            <input type="text" id="imageUrl" name="imageUrl" v-model="user.imageUrl" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="bio">brief bio: </label>
+            <input type="text" id="bio" name="bio" v-model="user.bio" class="form-control">
+        </div>
         <div class="form-group">
           <label for="register-email">email: </label>
           <input type="text" id="register-email" name="email" v-model="user.email" class="form-control">
@@ -38,6 +46,8 @@ export default {
     return {
       user: {
         name: "",
+        imageUrl: "",
+        bio: "",
         email: "",
         password: ""
       }

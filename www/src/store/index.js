@@ -97,6 +97,21 @@ export default new vuex.Store({
             commit('setUser', {})
             router.push({name: 'Welcome'})
           })
+          .catch(err => {
+            console.log(err)
+          })
+    },
+    verifyUserAuth({commit, dispatch}, userId) {
+      auth.get('authenticate')
+          .then(res => {
+            if (!res.data || res.data._id !== userId) {
+              dispatch('logoutUser')
+            }
+          })
+          .catch(err => {
+            console.log(err)
+            dispatch('logoutUser')
+          })
     }
 
     // API

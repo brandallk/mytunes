@@ -26,7 +26,7 @@
       }
     },
     computed: {
-
+      
     },
     methods: {
       hideSearch() {
@@ -35,6 +35,9 @@
       showSearch() {
         this.displaySearch = true
       }
+    },
+    mounted() {
+      this.$store.dispatch('verifyUserAuth', this.$route.params.userId)
     }
   }
 </script>
