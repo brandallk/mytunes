@@ -21,12 +21,16 @@ vue.use(vuex)
 
 export default new vuex.Store({
   state: {
-    iTunesResults: []
+    iTunesResults: [],
+    user: {}
   },
 
   mutations: {
     setItunesResults(state, results) {
       state.iTunesResults = results
+    },
+    setUser(state, user) {
+      state.user = user
     }
   },
 
@@ -42,6 +46,17 @@ export default new vuex.Store({
            .catch(err => {
              console.log(err)
            })
+    },
+    authenticate({commit, dispatch}) {
+      auth.get('authenticate')
+          .then(res => {
+            var sessionUser = res.data
+            console.log('sessionUser:', sessionUser)
+            commit('setUser', sessionUser)
+          })
+          .catch(err => {
+            console.error(err)
+          })
     },
   }
 })
