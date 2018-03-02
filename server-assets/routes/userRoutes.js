@@ -17,39 +17,39 @@ function getPlaylistsByUser(req, res, next) {
 }
 
 // TEMPORARY FOR TESTING!!! Get all Users
-// router.get('/users', getAllUsers)
-// function getAllUsers(req, res, next) {
-//   User.find(req.query)
-//     .then(users => {
-//       res.send(users)
-//     })
-//     .catch(next)
-// }
+router.get('/users', getAllUsers)
+function getAllUsers(req, res, next) {
+  User.find(req.query)
+    .then(users => {
+      res.send(users)
+    })
+    .catch(next)
+}
 
 // TEMPORARY FOR TESTING!!! Delete a User
-// router.delete('/users/:userId', deleteUser)
-// function deleteUser(req, res, next) {
-//   User.findByIdAndRemove(req.params.userId)
-//     .then(user => {
-//       return res.send({
-//         message: 'Sucessfully deleted a user'
-//       })
-//     })
-//     .catch(next)
-//   Playlist.deleteMany({
-//       userId: req.params.userId
-//     })
-//     .then(() => {
-//       console.log('Deleted user playlists')
-//     })
-//     .catch(next)
-//   Song.deleteMany({
-//       userId: req.params.userId
-//     })
-//     .then(() => {
-//       console.log('Deleted user songs')
-//     })
-//     .catch(next)
-// }
+router.delete('/users/:userId', deleteUser)
+function deleteUser(req, res, next) {
+  User.findByIdAndRemove(req.params.userId)
+    .then(user => {
+      return res.send({
+        message: 'Sucessfully deleted a user'
+      })
+    })
+    .catch(next)
+  Playlist.deleteMany({
+      userId: req.params.userId
+    })
+    .then(() => {
+      console.log('Deleted user playlists')
+    })
+    .catch(next)
+  Song.deleteMany({
+      userId: req.params.userId
+    })
+    .then(() => {
+      console.log('Deleted user songs')
+    })
+    .catch(next)
+}
 
 module.exports = {router}

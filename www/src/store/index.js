@@ -22,7 +22,8 @@ vue.use(vuex)
 export default new vuex.Store({
   state: {
     iTunesResults: [],
-    user: {}
+    user: {},
+    authError: {error: false, msg: ""}
   },
 
   mutations: {
@@ -31,10 +32,14 @@ export default new vuex.Store({
     },
     setUser(state, user) {
       state.user = user
+    },
+    setAuthError(state, msg) {
+      state.authError = {error: true, message: msg}
     }
   },
 
   actions: {
+    // iTunes
     searchItunesByArtist({commit, dispatch}, artist) {
       var url = '//bcw-getter.herokuapp.com/?url='
       var url2 = 'https://itunes.apple.com/search?term=' + artist
@@ -47,6 +52,8 @@ export default new vuex.Store({
              console.log(err)
            })
     },
+
+    // Auth
     authenticate({commit, dispatch}) {
       auth.get('authenticate')
           .then(res => {
@@ -58,5 +65,32 @@ export default new vuex.Store({
             console.error(err)
           })
     },
+    signInUser({commit, dispatch}, user) {
+      auth.post('login', user)
+          .then(res => {
+            var newUser = res.data
+            console.log('newUser:', newUser)
+            commit('setUser', newUser)
+            router.push({name: 'Home', params: {userId: newUser._id}})
+          })
+          .catch(err => {
+            console.log(err)
+            commit('setAuthError', 'Log-in failed: Invalid username or password')
+          })
+    },
+    registerUser({commit, dispatch}, user) {
+      auth.post('register', user)
+          .then(res => {
+            var newUser = res.data
+            console.log('newUser:', newUser)
+            commit('setUser', newUser)
+            router.push({name: 'Home', params: {userId: newUser._id}})
+          })
+          .catch(err => {
+            console.log(err)
+          })
+    }
+
+    // API
   }
 })

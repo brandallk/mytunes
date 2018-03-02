@@ -1,6 +1,6 @@
 <template>
-  <div class="topbar">
-    Topbar
+  <div class="topbar container-fluid bg-info py-4">
+    <h1 class="text-light text-center">MyTunes</h1>
   </div>
 </template>
 
