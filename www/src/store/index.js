@@ -89,6 +89,14 @@ export default new vuex.Store({
           .catch(err => {
             console.log(err)
           })
+    },
+    logoutUser({commit, dispatch}) {
+      auth.delete('logout')
+          .then( () => {
+            console.log('User logged out')
+            commit('setUser', {})
+            router.push({name: 'Welcome'})
+          })
     }
 
     // API
