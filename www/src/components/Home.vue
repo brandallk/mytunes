@@ -38,6 +38,7 @@
     },
     mounted() {
       this.$store.dispatch('verifyUserAuth', this.$route.params.userId)
+      this.$store.dispatch('getUserPlaylists')
     }
   }
 </script>

@@ -24,7 +24,8 @@ export default new vuex.Store({
     iTunesResults: [],
     user: {},
     authError: {error: false, msg: ""},
-    playlists: []
+    playlists: [],
+    songs: []
   },
 
   mutations: {
@@ -39,6 +40,9 @@ export default new vuex.Store({
     },
     setPlaylists(state, playlists) {
       state.playlists = playlists
+    },
+    setSongs(state, songs) {
+      state.songs = songs
     }
   },
 
@@ -125,6 +129,17 @@ export default new vuex.Store({
            var playlists = res.data
            console.log('playlists:', playlists)
            commit('setPlaylists', playlists)
+         })
+         .catch(err => {
+           console.log(err)
+         })
+    },
+    getPlaylistSongs({commit, dispatch}, playlistId) {
+      api.get(`playlists/${playlistId}/songs`)
+         .then(res => {
+           var songs = res.data
+           console.log('songs:', songs)
+           commit('setSongs', songs)
          })
          .catch(err => {
            console.log(err)
