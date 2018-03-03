@@ -7,7 +7,7 @@
 
         <select class="playlists form-control my-3" v-model="selectedPlaylist">
           <option class="playlist" value="" selected>New Playlist</option>
-          <option class="playlist" v-for="list in playlists" value="list">{{playlist.title}}</option>
+          <option class="playlist" v-for="list in playlists" :value="list">{{list.title}}</option>
         </select>
   
         <button class="btn btn-info px-4">Submit</button>
@@ -54,7 +54,7 @@ export default {
 
 <style scoped>
   .backing {
-    position: absolute;
+    position: fixed;
     top: 0;
     left: 0;
     height: 100vh;

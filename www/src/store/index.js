@@ -25,6 +25,7 @@ export default new vuex.Store({
     user: {},
     authError: {error: false, msg: ""},
     playlists: [],
+    defaultSongs: [],
     songs: []
   },
 
@@ -40,6 +41,9 @@ export default new vuex.Store({
     },
     setPlaylists(state, playlists) {
       state.playlists = playlists
+    },
+    setDefaultSongs(state, songs) {
+      state.defaultSongs = songs
     },
     setSongs(state, songs) {
       state.songs = songs
@@ -128,7 +132,21 @@ export default new vuex.Store({
          .then(res => {
            var playlists = res.data
            console.log('playlists:', playlists)
-           commit('setPlaylists', playlists)
+           if (playlists.length) {
+             commit('setPlaylists', playlists)
+             dispatch('getDefaultSongs', playlists[0]._id)
+           }
+         })
+         .catch(err => {
+           console.log(err)
+         })
+    },
+    getDefaultSongs({commit, dispatch}, playlistId) {
+      api.get(`playlists/${playlistId}/songs`)
+         .then(res => {
+           var songs = res.data
+           console.log('songs:', songs)
+           commit('setDefaultSongs', songs)
          })
          .catch(err => {
            console.log(err)
