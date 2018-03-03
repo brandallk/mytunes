@@ -1,7 +1,7 @@
 <template>
-    <div class="navbar container-fluid bg-dark">
+    <div class="navbar container-fluid bg-dark row text-light">
 
-        <div class="row w-100 text-light">
+        <!-- <div class="row text-light"> -->
           <div class="homelink navlink col-4 text-center py-4" @click="hideSearch">
             Home
           </div>
@@ -13,7 +13,7 @@
           <div class="logout navlink col-4 text-center py-4" @click="logoutUser">
             Logout
           </div>
-        </div>
+        <!-- </div> -->
   
       </div>
 </template>
@@ -47,7 +47,13 @@ export default {
 </script>
 
 <style scoped>
+  .navbar {
+    width: 100%;
+    padding: 0;
+    margin: 0;
+  }
   .navlink:hover {
     cursor: pointer;
+    background-color: #138091;
   }
 </style>
