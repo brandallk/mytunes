@@ -20,7 +20,7 @@ var schema = new Schema({
     imgUrl: {
       type: String,
     //   required: true,
-      default: 'http://placehold.it/200x200'
+      default: 'http://www.freeclipart.pw/uploads/2017/06/vinyl-rerd--music-listen-vinyl-vinyl-rerd-png-html-28.png'
     },
     userId: { // ID of the user who creates a Movie
         type: ObjectId,

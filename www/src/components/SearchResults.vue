@@ -52,13 +52,16 @@
       submit(song) {
         var newSong = {
           title: song.trackName,
+          albumTitle: song.collectionName,
           audioSrc: song.previewUrl,
           artists: [
             song.artistName
           ],
           imgUrl: song.artworkUrl100,
+          timeInSeconds: Math.floor(song.trackTimeMillis/1000),
           userId: this.$route.params.userId,
-          playlistId: ""
+          playlistId: "",
+          playlistTitle: " - "
         }
         this.song = newSong
         this.displayAddForm = true

@@ -10,7 +10,7 @@
         </div>
         <div class="form-group">
             <label for="imageUrl">photo URL: </label>
-            <input type="text" id="imageUrl" name="imageUrl" v-model="user.imageUrl" class="form-control">
+            <input type="text" id="imageUrl" name="imageUrl" v-model="user.imgUrl" class="form-control">
         </div>
         <div class="form-group">
             <label for="bio">brief bio: </label>
@@ -46,7 +46,7 @@ export default {
     return {
       user: {
         name: "",
-        imageUrl: "",
+        imgUrl: "",
         bio: "",
         email: "",
         password: ""

@@ -4,14 +4,15 @@
       <form action="#" class="mx-auto p-3 border border-light rounded bg-light" @submit.prevent="submit">
   
         <h2 class="h5 text-center">Add Song to My Music</h2>
+        <h3 class="h6 text-center">- {{song.title}} -</h3>
 
-        <select class="playlists form-control my-3" v-model="selectedPlaylist">
-          <option class="playlist" value="" selected>New Playlist</option>
+        <select class="playlists custom-select my-3" v-model="selectedPlaylist">
+          <option selected class="playlist">New Playlist</option>
           <option class="playlist" v-for="list in playlists" :value="list">{{list.title}}</option>
         </select>
   
-        <button class="btn btn-info px-4">Submit</button>
-        <button class="btn btn-default px-4 ml-2" @click="hideAddSongForm">Cancel</button>
+        <button type="submit" class="btn btn-info px-4">Submit</button>
+        <button type="button" class="btn btn-default px-4 ml-2" @click="hideAddSongForm">Cancel</button>
   
       </form>
     </div>
@@ -29,7 +30,7 @@ export default {
   ],
   data () {
     return {
-      selectedPlaylist: {}
+      selectedPlaylist: 'New Playlist'
     }
   },
   computed: {
@@ -39,9 +40,9 @@ export default {
   },
   methods: {
     submit() {
-      var playlistId = this.selectedPlaylist._id ? this.selectedPlaylist._id : ""
       var newSong = this.song
-      newSong.playlistId = playlistId
+      newSong.playlistId = this.selectedPlaylist._id ? this.selectedPlaylist._id : ""
+      newSong.playlistTitle = this.selectedPlaylist.title ? this.selectedPlaylist.title : " - "
       this.$store.dispatch('addSongToPlaylist', newSong)
       this.hideAddSongForm()
     },

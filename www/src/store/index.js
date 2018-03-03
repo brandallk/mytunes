@@ -107,6 +107,10 @@ export default new vuex.Store({
           .then( () => {
             console.log('User logged out')
             commit('setUser', {})
+            commit('setPlaylists', [])
+            commit('setDefaultSongs', [])
+            commit('setSongs', [])
+            commit('setItunesResults', [])
             router.push({name: 'Welcome'})
           })
           .catch(err => {
@@ -168,7 +172,7 @@ export default new vuex.Store({
       if (song.playlistId === "") {
         var newPlaylist = {
           title: "Untitled Playlist",
-          desc: "***",
+          desc: " ",
           userId: song.userId
         }
         api.post('playlists', newPlaylist)
@@ -176,6 +180,7 @@ export default new vuex.Store({
              var playlist = res.data.data
              console.log('new playlist:', playlist)
              song.playlistId = playlist._id
+             song.playlistTitle = playlist.title
              api.post('songs', song)
                 .then(res => {
                   var newSong = res.data.data
@@ -191,6 +196,7 @@ export default new vuex.Store({
            .then(res => {
              var newSong = res.data.data
              console.log('new song:', newSong)
+             dispatch('getUserPlaylists')
            })
            .catch(err => {
              console.log(err)

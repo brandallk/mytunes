@@ -3,23 +3,22 @@ var router = require('express').Router()
 
 // Create a new user
 router.post('/auth/register', (req, res) => {
-console.log(req.body)
   req.body.password = User.generateHash(req.body.password)
   User.create(req.body)
     .then(user => {
-      if (!user) {
+      if (!user) { console.log('error1')
         return res.status(401).send({
-          error: 'Invalid username and/or password 1'
+          error: 'Invalid username and/or password'
         })
       }
       user.password = null // Don't send the (hashed) password to the front-end. Best to delete it -- but because Mongoose prevents this, null it out instead.
       req.session.uid = user._id // Save the userId into the session
       res.send(user) // Send back the User instance (with a nulled-out password value)
     })
-    .catch(err => {
+    .catch(err => { console.log('error2', err)
       // Do not send the 'err' object to the front end. It contains too much information: Not safe to expose in production.
       res.status(401).send({
-        error: 'Invalid username and/or password 2'
+        error: 'Invalid username and/or password'
       })
     })
 })

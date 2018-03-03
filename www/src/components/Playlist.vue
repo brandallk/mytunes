@@ -1,10 +1,10 @@
 <template>
   <div class="playlist">
 
-    <!-- <h4 class="text-center">{{activeSong.playlistTitle}}</h4> -->
-    <h4 class="text-center">activeSong.playlistTitle</h4>
-
-    <div class="activeSong d-flex flex-column align-items-center mt-4">
+    <h4 class="text-center" v-if="!activeSong">Use 'Search' to create a playlist!</h4>
+    
+    <div class="activeSong d-flex flex-column align-items-center mt-4" v-if="activeSong">
+      <h4 class="text-center">{{activeSong.playlistTitle}}</h4>
       <img :src="activeSong.imgUrl" alt="song image" class="w-50 rounded-circle mb-4">
       <h5>{{activeSong.title}}</h5>
       <div class="controls row">
@@ -31,8 +31,8 @@
       <div class="song p-1 row px-4 py-2 align-items-center" v-for="song in songs">
         <span class="play-btn col-1"><i class="fa fa-play-circle" aria-hidden="true"></i></span>
         <span class="title col-4">{{song.title}}</span>
-        <!-- <span class="album col-4">{{song.album}}</span>
-        <span class="time col-3">{{song.duration)}}</span> -->
+        <span class="album col-4">{{song.albumTitle}}</span>
+        <span class="time col-3">{{getMinsFromSecs(song.timeInSeconds)}}</span>
       </div>
 
     </div>
@@ -70,11 +70,16 @@ export default {
       if (this.$store.state.defaultSongs) {
         return this.$store.state.defaultSongs[0]
       }
-      return {}
+      return false
     }
   },
   methods: {
-
+    getMinsFromSecs(totalSecs) {
+      var mins = Math.floor(totalSecs/60)
+      var secs = totalSecs % 60
+      var formattedSecs = secs < 10 ? "0" + secs : secs
+      return `${mins}:${formattedSecs}`
+    }
   }
 }
 </script>

@@ -25,10 +25,10 @@ var schema = new Schema({
   imgUrl: {
     type: String,
     required: true,
-    default: 'http://placehold.it/200x200'
+    default: 'https://www.shareicon.net/download/2015/09/24/106420_man_512x512.png'
   },
   bio: {
-    type: String,
+    type: String
   }
 })
 
