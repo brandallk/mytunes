@@ -38,7 +38,7 @@ function createPlaylist(req, res, next) {
 }
 
 function updatePlaylist(req, res, next) {
-  Playlist.findByIdAndUpdate(req.params.playlistId, {new: true})
+  Playlist.findByIdAndUpdate(req.params.playlistId, req.body, {new: true})
     .then(playlist => {
       return res.send({message: "Successfully updated playlist", data: playlist})
     })

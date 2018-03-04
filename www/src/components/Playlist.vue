@@ -5,7 +5,10 @@
     
     <div class="activeSong d-flex flex-column align-items-center mt-4" v-if="activeSong">
       <h4 class="text-center">
-        {{activeSong.playlistTitle}} <a href="#" @click.prevent="this.showPlaylistEditForm = true">edit</a>
+        {{playlist.title}}
+        <a href="#" class="text-info ml-2" @click.prevent="showPlaylistEditForm = true">
+            <i class="fas fa-edit"></i>
+        </a>
       </h4>
       <img :src="activeSong.imgUrl" alt="song image" class="w-50 rounded-circle mb-4">
       <h5>{{activeSong.title}}</h5>
@@ -18,7 +21,7 @@
         <div class="next col-4"><i class="fas fa-step-forward"></i></div>
       </div>
 
-      <!-- <playlistEditForm v-if="showPlaylistEditForm" :playlistId="activeSong.playlistId" v-on:hidePlaylistEditForm="this.showPlaylistEditForm = false"></playlistEditForm> -->
+      <playlistEditForm v-if="showPlaylistEditForm" :playlist="playlist" v-on:hidePlaylistEditForm="showPlaylistEditForm = false"></playlistEditForm>
     </div>
 
     <hr>
@@ -45,59 +48,63 @@
 </template>
 
 <script>
-export default {
-  name: 'Playlist',
-  components: {
-
-  },
-  data () {
-    return {
-      selectedPlaylistSongs: [],
-      selectedSong: {},
-      isPlaying: false,
-      showPlaylistEditForm: false
-    }
-  },
-  computed: {
-    playlist() {
-      return this.$store.state.activePlaylist
+  import PlaylistEditForm from './PlaylistEditForm'
+  export default {
+    name: 'Playlist',
+    components: {
+      playlistEditForm: PlaylistEditForm
     },
-    songs() {
-      return this.$store.state.activePlaylistSongs
+    data () {
+      return {
+        // selectedPlaylistSongs: [],
+        // selectedSong: {},
+        isPlaying: false,
+        showPlaylistEditForm: false
+      }
     },
-    activeSong() {
-      return this.$store.state.activeSong
+    computed: {
+      playlist() {
+        return this.$store.state.activePlaylist
+      },
+      songs() {
+        return this.$store.state.activePlaylistSongs
+      },
+      activeSong() {
+        return this.$store.state.activeSong
+      },
+      // songs() {
+      //   if (this.selectedPlaylistSongs.length) {
+      //     return this.selectedPlaylistSongs
+      //   }
+      //   if (this.$store.state.defaultSongs) {
+      //     return this.$store.state.defaultSongs
+      //   }
+      //   return []
+      // },
+      // activeSong() {
+      //   if (this.selectedSong._id) {
+      //     return this.selectedSong
+      //   }
+      //   if (this.$store.state.defaultSongs) {
+      //     return this.$store.state.defaultSongs[0]
+      //   }
+      //   return false
+      // }
     },
-    // songs() {
-    //   if (this.selectedPlaylistSongs.length) {
-    //     return this.selectedPlaylistSongs
-    //   }
-    //   if (this.$store.state.defaultSongs) {
-    //     return this.$store.state.defaultSongs
-    //   }
-    //   return []
-    // },
-    // activeSong() {
-    //   if (this.selectedSong._id) {
-    //     return this.selectedSong
-    //   }
-    //   if (this.$store.state.defaultSongs) {
-    //     return this.$store.state.defaultSongs[0]
-    //   }
-    //   return false
-    // }
-  },
-  methods: {
-    getMinsFromSecs(totalSecs) {
-      var mins = Math.floor(totalSecs/60)
-      var secs = totalSecs % 60
-      var formattedSecs = secs < 10 ? "0" + secs : secs
-      return `${mins}:${formattedSecs}`
+    methods: {
+      getMinsFromSecs(totalSecs) {
+        var mins = Math.floor(totalSecs/60)
+        var secs = totalSecs % 60
+        var formattedSecs = secs < 10 ? "0" + secs : secs
+        return `${mins}:${formattedSecs}`
+      }
     }
   }
-}
 </script>
 
 <style scoped>
-
+  .activeSong a {
+    display: inline-block;
+    font-size: 0.95rem;
+  }
 </style>

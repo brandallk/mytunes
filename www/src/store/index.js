@@ -23,7 +23,10 @@ export default new vuex.Store({
   state: {
     iTunesResults: [],
     user: {},
-    authError: {error: false, msg: ""},
+    authError: {
+      error: false,
+      msg: ""
+    },
     userPlaylists: [],
     activePlaylist: {},
     activePlaylistSongs: [],
@@ -38,7 +41,10 @@ export default new vuex.Store({
       state.user = user
     },
     setAuthError(state, msg) {
-      state.authError = {error: true, message: msg}
+      state.authError = {
+        error: true,
+        message: msg
+      }
     },
     setPlaylists(state, playlists) {
       state.userPlaylists = playlists
@@ -56,136 +62,192 @@ export default new vuex.Store({
 
   actions: {
     // iTunes
-    searchItunesByArtist({commit, dispatch}, artist) {
+    searchItunesByArtist({
+      commit,
+      dispatch
+    }, artist) {
       var url = '//bcw-getter.herokuapp.com/?url='
       var url2 = 'https://itunes.apple.com/search?term=' + artist
       var apiUrl = url + encodeURIComponent(url2)
       axios.get(apiUrl)
-           .then(results => {
-             commit('setItunesResults', results.data.results)
-           })
-           .catch(err => {
-             console.log(err)
-           })
+        .then(results => {
+          commit('setItunesResults', results.data.results)
+        })
+        .catch(err => {
+          console.log(err)
+        })
     },
 
     // Auth
-    authenticate({commit, dispatch}) {
+    authenticate({
+      commit,
+      dispatch
+    }) {
       auth.get('authenticate')
-          .then(res => {
-            var sessionUser = res.data
-            console.log('sessionUser:', sessionUser)
-            commit('setUser', sessionUser)
-          })
-          .catch(err => {
-            console.error(err)
-          })
+        .then(res => {
+          var sessionUser = res.data
+          console.log('sessionUser:', sessionUser)
+          commit('setUser', sessionUser)
+        })
+        .catch(err => {
+          console.error(err)
+        })
     },
-    signInUser({commit, dispatch}, user) {
+    signInUser({
+      commit,
+      dispatch
+    }, user) {
       auth.post('login', user)
-          .then(res => {
-            var newUser = res.data
-            console.log('newUser:', newUser)
-            commit('setUser', newUser)
-            router.push({name: 'Home', params: {userId: newUser._id}})
+        .then(res => {
+          var newUser = res.data
+          console.log('newUser:', newUser)
+          commit('setUser', newUser)
+          router.push({
+            name: 'Home',
+            params: {
+              userId: newUser._id
+            }
           })
-          .catch(err => {
-            console.log(err)
-            commit('setAuthError', 'Log-in failed: Invalid username or password')
-          })
+        })
+        .catch(err => {
+          console.log(err)
+          commit('setAuthError', 'Log-in failed: Invalid username or password')
+        })
     },
-    registerUser({commit, dispatch}, user) {
+    registerUser({
+      commit,
+      dispatch
+    }, user) {
       auth.post('register', user)
-          .then(res => {
-            var newUser = res.data
-            console.log('newUser:', newUser)
-            commit('setUser', newUser)
-            router.push({name: 'Home', params: {userId: newUser._id}})
+        .then(res => {
+          var newUser = res.data
+          console.log('newUser:', newUser)
+          commit('setUser', newUser)
+          router.push({
+            name: 'Home',
+            params: {
+              userId: newUser._id
+            }
           })
-          .catch(err => {
-            console.log(err)
-          })
+        })
+        .catch(err => {
+          console.log(err)
+        })
     },
-    logoutUser({commit, dispatch}) {
+    logoutUser({
+      commit,
+      dispatch
+    }) {
       auth.delete('logout')
-          .then( () => {
-            console.log('User logged out')
-            commit('setUser', {})
-            commit('setPlaylists', [])
-            commit('setActivePlaylist', {})
-            commit('setActivePlaylistSongs', [])
-            commit('setActiveSong', {})
-            commit('setItunesResults', [])
-            router.push({name: 'Welcome'})
+        .then(() => {
+          console.log('User logged out')
+          commit('setUser', {})
+          commit('setPlaylists', [])
+          commit('setActivePlaylist', {})
+          commit('setActivePlaylistSongs', [])
+          commit('setActiveSong', {})
+          commit('setItunesResults', [])
+          router.push({
+            name: 'Welcome'
           })
-          .catch(err => {
-            console.log(err)
-          })
+        })
+        .catch(err => {
+          console.log(err)
+        })
     },
     verifyUserAuth({commit, dispatch}, userId) {
       auth.get('authenticate')
-          .then(res => {
-            if (!res.data || res.data._id !== userId) {
-              dispatch('logoutUser')
-            }
-          })
-          .catch(err => {
-            console.log(err)
+        .then(res => {
+          if (!res.data || res.data._id !== userId) {
             dispatch('logoutUser')
-          })
+          }
+        })
+        .catch(err => {
+          console.log(err)
+          dispatch('logoutUser')
+        })
     },
 
     // API
     getUserPlaylists({commit, dispatch}) {
       api.get('playlists')
-         .then(res => {
-           var playlists = res.data
-           console.log('playlists:', playlists)
-           if (playlists.length) {
-             // Sort playlist in descending order by 'createdAt' date-time
-             playlists = playlists.sort((listA, listB) => listB.createdAt - listA.createdAt)
-             commit('setPlaylists', playlists)
-             dispatch('getPlaylist', playlists[0]._id)
-           }
-         })
-         .catch(err => {
-           console.log(err)
-         })
+        .then(res => {
+          var playlists = res.data
+          console.log('playlists:', playlists)
+          if (playlists.length) {
+            // Sort playlist in descending order by 'createdAt' date-time
+            playlists = playlists.sort((listA, listB) => listB.createdAt - listA.createdAt)
+            commit('setPlaylists', playlists)
+            dispatch('getPlaylist', playlists[0]._id)
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    updateUserPlaylists({commit, dispatch}) {
+      api.get('playlists')
+        .then(res => {
+          var playlists = res.data
+          console.log('updated playlists:', playlists)
+          if (playlists.length) {
+            // Sort playlist in descending order by 'createdAt' date-time
+            playlists = playlists.sort((listA, listB) => listB.createdAt - listA.createdAt)
+            commit('setPlaylists', playlists)
+          }
+        })
+        .catch(err => {
+          console.log(err)
+        })
     },
     getPlaylist({commit, dispatch}, playlistId) {
       api.get(`playlists/${playlistId}`)
-         .then(res => {
-           var playlist = res.data
-           console.log('playlist:', playlist)
-           commit('setActivePlaylist', playlist)
-           dispatch('getPlaylistSongs', playlist._id)
-         })
-         .catch(err => {
-           console.log(err)
-         })
+        .then(res => {
+          var playlist = res.data
+          console.log('playlist:', playlist)
+          commit('setActivePlaylist', playlist)
+          dispatch('getPlaylistSongs', playlist._id)
+        })
+        .catch(err => {
+          console.log(err)
+        })
     },
     getPlaylistSongs({commit, dispatch}, playlistId) {
       api.get(`playlists/${playlistId}/songs`)
-         .then(res => {
-           var songs = res.data
-           console.log('songs:', songs)
-           commit('setActivePlaylistSongs', songs)
-           dispatch('getSong', songs[0]._id)
-         })
-         .catch(err => {
-           console.log(err)
-         })
+        .then(res => {
+          var songs = res.data
+          console.log('songs:', songs)
+          commit('setActivePlaylistSongs', songs)
+          dispatch('getSong', songs[0]._id)
+        })
+        .catch(err => {
+          console.log(err)
+        })
     },
     getSong({commit, dispatch}, songId) {
       api.get(`songs/${songId}`)
-         .then(res => {
-           var song = res.data
-           console.log('song:', song)
-           commit('setActiveSong', song)
-         })
-         .catch(err => {
-           console.log(err)
-         })
+        .then(res => {
+          var song = res.data
+          console.log('song:', song)
+          commit('setActiveSong', song)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+    updatePlaylist({commit, dispatch}, playlist) {
+      var playlistId = playlist._id
+      var playlistObj = {
+        title: playlist.title,
+        imgUrl: playlist.imgUrl
+      }
+      api.put(`playlists/${playlistId}`, playlistObj)
+        .then(res => {
+          var playlist = res.data.data
+          console.log('updated playlist:', playlist)
+          commit('setActivePlaylist', playlist)
+          dispatch('updateUserPlaylists')
+        })
     },
 
     addSongToPlaylist({commit, dispatch}, song) {
@@ -196,31 +258,31 @@ export default new vuex.Store({
           userId: song.userId
         }
         api.post('playlists', newPlaylist)
-           .then(res => {
-             var playlist = res.data.data
-             console.log('new playlist:', playlist)
-             song.playlistId = playlist._id
-             song.playlistTitle = playlist.title
-             api.post('songs', song)
-                .then(res => {
-                  var newSong = res.data.data
-                  console.log('new song:', newSong)
-                  dispatch('getUserPlaylists')
-                })
-           })
-           .catch(err => {
-             console.log(err)
-           })
+          .then(res => {
+            var playlist = res.data.data
+            console.log('new playlist:', playlist)
+            song.playlistId = playlist._id
+            song.playlistTitle = playlist.title
+            api.post('songs', song)
+              .then(res => {
+                var newSong = res.data.data
+                console.log('new song:', newSong)
+                dispatch('getUserPlaylists')
+              })
+          })
+          .catch(err => {
+            console.log(err)
+          })
       } else {
         api.post('songs', song)
-           .then(res => {
-             var newSong = res.data.data
-             console.log('new song:', newSong)
-             dispatch('getUserPlaylists')
-           })
-           .catch(err => {
-             console.log(err)
-           })
+          .then(res => {
+            var newSong = res.data.data
+            console.log('new song:', newSong)
+            dispatch('getUserPlaylists')
+          })
+          .catch(err => {
+            console.log(err)
+          })
       }
     }
 
