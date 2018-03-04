@@ -22,7 +22,7 @@ export default {
   },
   computed: {
     playlists() {
-      return this.$store.state.playlists
+      return this.$store.state.userPlaylists
     }
   },
   methods: {

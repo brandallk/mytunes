@@ -24,9 +24,10 @@ export default new vuex.Store({
     iTunesResults: [],
     user: {},
     authError: {error: false, msg: ""},
-    playlists: [],
-    defaultSongs: [],
-    songs: []
+    userPlaylists: [],
+    activePlaylist: {},
+    activePlaylistSongs: [],
+    activeSong: {}
   },
 
   mutations: {
@@ -40,13 +41,16 @@ export default new vuex.Store({
       state.authError = {error: true, message: msg}
     },
     setPlaylists(state, playlists) {
-      state.playlists = playlists
+      state.userPlaylists = playlists
     },
-    setDefaultSongs(state, songs) {
-      state.defaultSongs = songs
+    setActivePlaylist(state, playlist) {
+      state.activePlaylist = playlist
     },
-    setSongs(state, songs) {
-      state.songs = songs
+    setActivePlaylistSongs(state, songs) {
+      state.activePlaylistSongs = songs
+    },
+    setActiveSong(state, song) {
+      state.activeSong = song
     }
   },
 
@@ -108,8 +112,9 @@ export default new vuex.Store({
             console.log('User logged out')
             commit('setUser', {})
             commit('setPlaylists', [])
-            commit('setDefaultSongs', [])
-            commit('setSongs', [])
+            commit('setActivePlaylist', {})
+            commit('setActivePlaylistSongs', [])
+            commit('setActiveSong', {})
             commit('setItunesResults', [])
             router.push({name: 'Welcome'})
           })
@@ -137,20 +142,23 @@ export default new vuex.Store({
            var playlists = res.data
            console.log('playlists:', playlists)
            if (playlists.length) {
+             // Sort playlist in descending order by 'createdAt' date-time
+             playlists = playlists.sort((listA, listB) => listB.createdAt - listA.createdAt)
              commit('setPlaylists', playlists)
-             dispatch('getDefaultSongs', playlists[0]._id)
+             dispatch('getPlaylist', playlists[0]._id)
            }
          })
          .catch(err => {
            console.log(err)
          })
     },
-    getDefaultSongs({commit, dispatch}, playlistId) {
-      api.get(`playlists/${playlistId}/songs`)
+    getPlaylist({commit, dispatch}, playlistId) {
+      api.get(`playlists/${playlistId}`)
          .then(res => {
-           var songs = res.data
-           console.log('songs:', songs)
-           commit('setDefaultSongs', songs)
+           var playlist = res.data
+           console.log('playlist:', playlist)
+           commit('setActivePlaylist', playlist)
+           dispatch('getPlaylistSongs', playlist._id)
          })
          .catch(err => {
            console.log(err)
@@ -161,7 +169,19 @@ export default new vuex.Store({
          .then(res => {
            var songs = res.data
            console.log('songs:', songs)
-           commit('setSongs', songs)
+           commit('setActivePlaylistSongs', songs)
+           dispatch('getSong', songs[0]._id)
+         })
+         .catch(err => {
+           console.log(err)
+         })
+    },
+    getSong({commit, dispatch}, songId) {
+      api.get(`songs/${songId}`)
+         .then(res => {
+           var song = res.data
+           console.log('song:', song)
+           commit('setActiveSong', song)
          })
          .catch(err => {
            console.log(err)

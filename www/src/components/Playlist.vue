@@ -4,7 +4,9 @@
     <h4 class="text-center" v-if="!activeSong">Use 'Search' to create a playlist!</h4>
     
     <div class="activeSong d-flex flex-column align-items-center mt-4" v-if="activeSong">
-      <h4 class="text-center">{{activeSong.playlistTitle}}</h4>
+      <h4 class="text-center">
+        {{activeSong.playlistTitle}} <a href="#" @click.prevent="this.showPlaylistEditForm = true">edit</a>
+      </h4>
       <img :src="activeSong.imgUrl" alt="song image" class="w-50 rounded-circle mb-4">
       <h5>{{activeSong.title}}</h5>
       <div class="controls row">
@@ -15,6 +17,8 @@
         </div>
         <div class="next col-4"><i class="fas fa-step-forward"></i></div>
       </div>
+
+      <!-- <playlistEditForm v-if="showPlaylistEditForm" :playlistId="activeSong.playlistId" v-on:hidePlaylistEditForm="this.showPlaylistEditForm = false"></playlistEditForm> -->
     </div>
 
     <hr>
@@ -50,28 +54,38 @@ export default {
     return {
       selectedPlaylistSongs: [],
       selectedSong: {},
-      isPlaying: false
+      isPlaying: false,
+      showPlaylistEditForm: false
     }
   },
   computed: {
+    playlist() {
+      return this.$store.state.activePlaylist
+    },
     songs() {
-      if (this.selectedPlaylistSongs.length) {
-        return this.selectedPlaylistSongs
-      }
-      if (this.$store.state.defaultSongs) {
-        return this.$store.state.defaultSongs
-      }
-      return []
+      return this.$store.state.activePlaylistSongs
     },
     activeSong() {
-      if (this.selectedSong._id) {
-        return this.selectedSong
-      }
-      if (this.$store.state.defaultSongs) {
-        return this.$store.state.defaultSongs[0]
-      }
-      return false
-    }
+      return this.$store.state.activeSong
+    },
+    // songs() {
+    //   if (this.selectedPlaylistSongs.length) {
+    //     return this.selectedPlaylistSongs
+    //   }
+    //   if (this.$store.state.defaultSongs) {
+    //     return this.$store.state.defaultSongs
+    //   }
+    //   return []
+    // },
+    // activeSong() {
+    //   if (this.selectedSong._id) {
+    //     return this.selectedSong
+    //   }
+    //   if (this.$store.state.defaultSongs) {
+    //     return this.$store.state.defaultSongs[0]
+    //   }
+    //   return false
+    // }
   },
   methods: {
     getMinsFromSecs(totalSecs) {
