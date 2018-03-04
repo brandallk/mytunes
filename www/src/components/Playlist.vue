@@ -1,12 +1,12 @@
 <template>
   <div class="playlist">
 
-    <h4 class="text-center" v-if="!activeSong">Use 'Search' to create a playlist!</h4>
+    <h4 class="text-center" v-if="!activeSong._id">Use 'Search' to create a playlist!</h4>
     
-    <div class="activeSong d-flex flex-column align-items-center mt-4" v-if="activeSong">
+    <div class="activeSong d-flex flex-column align-items-center mt-4" v-if="activeSong._id">
       <h4 class="text-center">
         {{playlist.title}}
-        <a href="#" class="text-info ml-2" @click.prevent="showPlaylistEditForm = true">
+        <a href="#" class="text-info ml-2" @click.prevent="showPlaylistEditForm = true" title="Edit Playlist">
             <i class="fas fa-edit"></i>
         </a>
       </h4>
@@ -71,25 +71,7 @@
       },
       activeSong() {
         return this.$store.state.activeSong
-      },
-      // songs() {
-      //   if (this.selectedPlaylistSongs.length) {
-      //     return this.selectedPlaylistSongs
-      //   }
-      //   if (this.$store.state.defaultSongs) {
-      //     return this.$store.state.defaultSongs
-      //   }
-      //   return []
-      // },
-      // activeSong() {
-      //   if (this.selectedSong._id) {
-      //     return this.selectedSong
-      //   }
-      //   if (this.$store.state.defaultSongs) {
-      //     return this.$store.state.defaultSongs[0]
-      //   }
-      //   return false
-      // }
+      }
     },
     methods: {
       getMinsFromSecs(totalSecs) {

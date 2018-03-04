@@ -29,6 +29,7 @@ export default new vuex.Store({
     },
     userPlaylists: [],
     activePlaylist: {},
+    activePlaylistSongIDs: [],
     activePlaylistSongs: [],
     activeSong: {}
   },
@@ -52,6 +53,9 @@ export default new vuex.Store({
     setActivePlaylist(state, playlist) {
       state.activePlaylist = playlist
     },
+    setActivePlaylistSongIDs(state, ids) {
+      state.activePlaylistSongIDs = ids
+    },
     setActivePlaylistSongs(state, songs) {
       state.activePlaylistSongs = songs
     },
@@ -62,10 +66,7 @@ export default new vuex.Store({
 
   actions: {
     // iTunes
-    searchItunesByArtist({
-      commit,
-      dispatch
-    }, artist) {
+    searchItunesByArtist({commit, dispatch}, artist) {
       var url = '//bcw-getter.herokuapp.com/?url='
       var url2 = 'https://itunes.apple.com/search?term=' + artist
       var apiUrl = url + encodeURIComponent(url2)
@@ -79,10 +80,7 @@ export default new vuex.Store({
     },
 
     // Auth
-    authenticate({
-      commit,
-      dispatch
-    }) {
+    authenticate({commit, dispatch}) {
       auth.get('authenticate')
         .then(res => {
           var sessionUser = res.data
@@ -93,10 +91,7 @@ export default new vuex.Store({
           console.error(err)
         })
     },
-    signInUser({
-      commit,
-      dispatch
-    }, user) {
+    signInUser({commit, dispatch}, user) {
       auth.post('login', user)
         .then(res => {
           var newUser = res.data
@@ -114,10 +109,7 @@ export default new vuex.Store({
           commit('setAuthError', 'Log-in failed: Invalid username or password')
         })
     },
-    registerUser({
-      commit,
-      dispatch
-    }, user) {
+    registerUser({commit, dispatch}, user) {
       auth.post('register', user)
         .then(res => {
           var newUser = res.data
@@ -134,16 +126,14 @@ export default new vuex.Store({
           console.log(err)
         })
     },
-    logoutUser({
-      commit,
-      dispatch
-    }) {
+    logoutUser({commit, dispatch}) {
       auth.delete('logout')
         .then(() => {
           console.log('User logged out')
           commit('setUser', {})
           commit('setPlaylists', [])
           commit('setActivePlaylist', {})
+          commit('setActivePlaylistSongIDs', [])
           commit('setActivePlaylistSongs', [])
           commit('setActiveSong', {})
           commit('setItunesResults', [])
@@ -206,6 +196,8 @@ export default new vuex.Store({
           var playlist = res.data
           console.log('playlist:', playlist)
           commit('setActivePlaylist', playlist)
+          var playlistSongIDs = playlist.songIDs
+          commit('setActivePlaylistSongIDs', playlistSongIDs)
           dispatch('getPlaylistSongs', playlist._id)
         })
         .catch(err => {
@@ -237,11 +229,11 @@ export default new vuex.Store({
     },
     updatePlaylist({commit, dispatch}, playlist) {
       var playlistId = playlist._id
-      var playlistObj = {
+      var playlistChanges = {
         title: playlist.title,
         imgUrl: playlist.imgUrl
       }
-      api.put(`playlists/${playlistId}`, playlistObj)
+      api.put(`playlists/${playlistId}`, playlistChanges)
         .then(res => {
           var playlist = res.data.data
           console.log('updated playlist:', playlist)
@@ -255,12 +247,14 @@ export default new vuex.Store({
         var newPlaylist = {
           title: "Untitled Playlist",
           desc: " ",
-          userId: song.userId
+          userId: song.userId,
+          songIDs: []
         }
         api.post('playlists', newPlaylist)
           .then(res => {
             var playlist = res.data.data
             console.log('new playlist:', playlist)
+            newPlaylist = playlist
             song.playlistId = playlist._id
             song.playlistTitle = playlist.title
             api.post('songs', song)

@@ -37,14 +37,14 @@ server.use(session)
 server.use(authRoutes)
 
 // Gateway for all following routes:
-server.use('/api/*', (req, res, next) => {
-  if (req.method.toLowerCase() != 'get' && !req.session.uid) { // If the user isn't signed in, but made a non-GET reqest...
-    return res.status(401).send({
-      error: 'Please log in to continue'
-    }) // ...don't allow it.
-  }
-  next() // Otherwise, send the reqest on to be handled by following routes.
-})
+// server.use('/api/*', (req, res, next) => {
+//   if (req.method.toLowerCase() != 'get' && !req.session.uid) { // If the user isn't signed in, but made a non-GET reqest...
+//     return res.status(401).send({
+//       error: 'Please log in to continue'
+//     }) // ...don't allow it.
+//   }
+//   next() // Otherwise, send the reqest on to be handled by following routes.
+// })
 
 server.use('/api', userRoutes.router)
 server.use('/api', playlistRoutes.router)

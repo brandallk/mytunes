@@ -1,4 +1,5 @@
 var Song = require('../models/song')
+var Playlist = require('../models/playlist')
 
 var router = require('express').Router()
 
@@ -26,9 +27,28 @@ function getSong(req, res, next) {
 function createSong(req, res, next) {
   Song.create(req.body)
     .then(song => {
-      return res.send({message: "Successfully created song", data: song})
+      res.send({message: "Successfully created song", data: song})
+      return song
     })
-    .catch(next)
+    .then(song => {
+      // console.log('song at songRoutes line 34:', song)
+      return Playlist.findById(song.playlistId)
+        .then(playlist => {
+          return {playlist: playlist, newSongID: song._id}
+        }).catch(err => {console.log('err', err)})
+    })
+    .then(data => {
+      // console.log('data at songRoutes line 41:', data)
+      playlistSongIDs = data.playlist.songIDs
+      playlistSongIDs.push(data.newSongID)
+      Playlist.findByIdAndUpdate(data.playlist._id, {songIDs: playlistSongIDs}, {new: true})
+        .then(updatedPlaylist => {
+          // console.log('Successfully updated playlist:', updatedPlaylist)
+        }).catch(err => {console.log('err', err)})
+    })
+    .catch(err => {
+      console.log('err', err)
+    })
 }
 
 function removeSong(req, res, next) {

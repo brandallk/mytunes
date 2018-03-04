@@ -26,6 +26,10 @@ var schema = new Schema({
         type: ObjectId,
         required: true,
         ref: 'User'
+    },
+    songIDs: {
+        type: Array,
+        required: true
     }
 })
 
