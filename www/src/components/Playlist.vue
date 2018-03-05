@@ -38,10 +38,15 @@
       </div>
   
       <div class="song p-1 row px-4 py-2 align-items-center" draggable="true" v-for="song in songs" @dragstart="dragstart(song)" @dragover.prevent="dragover" @drop="drop(song)">
-        <span class="play-btn col-1"><i class="fa fa-play-circle" aria-hidden="true"></i></span>
+        <span class="play-btn col-1"><i class="fa fa-play-circle"></i></span>
         <span class="title col-4">{{song.title}}</span>
         <span class="album col-4">{{song.albumTitle}}</span>
-        <span class="time col-3">{{getMinsFromSecs(song.timeInSeconds)}}</span>
+        <span class="time col-2">{{getMinsFromSecs(song.timeInSeconds)}}</span>
+        <span class="play-btn col-1">
+          <a href="#" class="text-info" @click.prevent="deleteSong(song)" title="Remove Song">
+            <i class="fas fa-trash-alt"></i>
+          </a>
+        </span>
       </div>
 
     </div>
@@ -111,6 +116,10 @@
         updatedPlaylist.songIDs = songIDs
 
         this.$store.dispatch('updatePlaylistSongIDs', updatedPlaylist)
+      },
+      deleteSong(song) {
+        console.log('delete', song.title, song._id)
+        this.$store.dispatch('deleteSong', song)
       }
     }
   }

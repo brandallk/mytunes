@@ -52,11 +52,33 @@ function createSong(req, res, next) {
 }
 
 function removeSong(req, res, next) {
+  Song.findById(req.params.songId)
+    .then(song => {
+      // console.log('song at songRoutes line 57:', song)
+      return Playlist.findById(song.playlistId)
+        .then(playlist => {
+          return {playlist: playlist, removedSongID: song._id}
+        }).catch(err => {console.log('err', err)})
+    })
+    .then(data => {
+      // console.log('data at songRoutes line 64:', data)
+      playlistSongIDs = data.playlist.songIDs
+      playlistSongIDs.splice(playlistSongIDs.indexOf(data.removedSongID), 1)
+      Playlist.findByIdAndUpdate(data.playlist._id, {songIDs: playlistSongIDs}, {new: true})
+        .then(updatedPlaylist => {
+          // console.log('Successfully updated playlist:', updatedPlaylist)
+        }).catch(err => {console.log('err', err)})
+    })
+    .catch(err => {
+      console.log('err', err)
+    })
   Song.findByIdAndRemove(req.params.songId)
     .then(song => {
       return res.send({message: "Successfully deleted song"})
     })
-    .catch(next)
+    .catch(err => {
+      console.log('err', err)
+    })
 }
 
 module.exports = {router}

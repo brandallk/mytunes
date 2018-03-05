@@ -291,6 +291,16 @@ export default new vuex.Store({
             console.log(err)
           })
       }
+    },
+    
+    deleteSong({commit, dispatch}, song) {
+      api.delete(`songs/${song._id}`)
+        .then(res => {
+          dispatch('getPlaylist', song.playlistId)
+        })
+        .catch(err => {
+          console.log(err)
+        })
     }
 
   }
