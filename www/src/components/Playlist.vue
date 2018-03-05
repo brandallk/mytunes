@@ -14,7 +14,7 @@
       <h5>{{activeSong.title}}</h5>
       <div class="controls d-flex align-items-center">
         <div class="back text-center pb-1 mr-3">
-          <a href="#" class="text-info">
+          <a href="#" class="text-info" @click.prevent="playPreviousSong">
             <i class="fas fa-step-backward fa-lg"></i>
           </a>
         </div>
@@ -27,7 +27,7 @@
           </a>
         </div>
         <div class="next text-center pb-1 ml-3">
-          <a href="#" class="text-info">
+          <a href="#" class="text-info" @click.prevent="playNextSong">
             <i class="fas fa-step-forward fa-lg"></i>
           </a>
         </div>
@@ -109,6 +109,11 @@
       activeSong() {
         return this.$store.state.activeSong
       },
+      previousSong() {
+        var activeSongIndex = this.songs.indexOf(this.activeSong)
+        var previousSongIndex = this.songs[activeSongIndex - 1] ? activeSongIndex - 1 : this.songs.length - 1
+        return this.songs[previousSongIndex]
+      },
       nextSong() {
         var activeSongIndex = this.songs.indexOf(this.activeSong)
         var nextSongIndex = this.songs[activeSongIndex + 1] ? activeSongIndex + 1 : 0
@@ -174,6 +179,12 @@
         clearTimeout(this.selectedSong.timeout)
         this.selectedSong.id = ""
         this.audioIsPlaying = false
+      },
+      playPreviousSong() {
+        this.play(this.previousSong, this.previousSong.audioSrc)
+      },
+      playNextSong() {
+        this.play(this.nextSong, this.nextSong.audioSrc)
       },
       showPlayBtn(song) {
         return this.selectedSong.id != song._id
