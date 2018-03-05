@@ -70,7 +70,7 @@
           artists: [
             song.artistName
           ],
-          imgUrl: song.artworkUrl100,
+          imgUrl: song.artworkUrl100.replace('100x100bb', '500x500bb'),
           timeInSeconds: Math.floor(song.trackTimeMillis/1000),
           userId: this.$route.params.userId,
           playlistId: "",

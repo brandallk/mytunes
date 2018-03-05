@@ -10,21 +10,27 @@
             <i class="fas fa-edit"></i>
         </a>
       </h4>
-      <img :src="activeSong.imgUrl" alt="song image" class="w-50 rounded-circle mb-4">
+      <img :src="activeSong.imgUrl" alt="song image" class="w-50 mb-4">
       <h5>{{activeSong.title}}</h5>
-      <div class="controls row">
-        <div class="back col-4"><i class="fas fa-step-backward"></i></div>
-        <div class="play-pause text-center col-4">
-          <!-- <div class="play" v-if="!isPlaying"><i class="fas fa-play"></i></div>
-          <div class="pause" v-if="isPlaying"><i class="fas fa-pause"></i></div> -->
-          <a href="#" class="play-btn text-info" v-show="showPlayBtn(activeSong)" @click.prevent="play(activeSong, activeSong.audioSrc)">
-            <i class="fas fa-play"></i>
-          </a>
-          <a href="#" class="pause-btn text-info" v-show="showPauseBtn(activeSong)" @click.prevent="pause(activeSong._id, activeSong.audioSrc)">
-            <i class="fas fa-pause"></i>
+      <div class="controls d-flex align-items-center">
+        <div class="back text-center pb-1 mr-3">
+          <a href="#" class="text-info">
+            <i class="fas fa-step-backward fa-lg"></i>
           </a>
         </div>
-        <div class="next col-4"><i class="fas fa-step-forward"></i></div>
+        <div class="play-pause text-center px-0">
+          <a href="#" class="play-btn text-info" v-show="showPlayBtn(activeSong)" @click.prevent="play(activeSong, activeSong.audioSrc)">
+            <i class="fa fa-play-circle fa-2x"></i>
+          </a>
+          <a href="#" class="pause-btn text-info" v-show="showPauseBtn(activeSong)" @click.prevent="pause(activeSong._id, activeSong.audioSrc)">
+            <i class="fas fa-pause-circle fa-2x"></i>
+          </a>
+        </div>
+        <div class="next text-center pb-1 ml-3">
+          <a href="#" class="text-info">
+            <i class="fas fa-step-forward fa-lg"></i>
+          </a>
+        </div>
       </div>
 
       <playlistEditForm v-if="showPlaylistEditForm" :playlist="playlist" v-on:hidePlaylistEditForm="showPlaylistEditForm = false"></playlistEditForm>
@@ -74,15 +80,19 @@
     },
     data () {
       return {
-        isPlaying: false,
         showPlaylistEditForm: false,
         draggedSong: {},
         dropTargetSong: {},
         selectedSong: {
           id: "",
-          audio: {ended: true}
-        }
+          audio: {ended: true, paused: true},
+          timeout: {}
+        },
+        audioIsPlaying: false
       }
+    },
+    watch: {
+      
     },
     computed: {
       playlist() {
@@ -99,8 +109,10 @@
       activeSong() {
         return this.$store.state.activeSong
       },
-      audioIsPlaying() {
-        return !(this.selectedSong.audio.ended || this.selectedSong.audio.paused)
+      nextSong() {
+        var activeSongIndex = this.songs.indexOf(this.activeSong)
+        var nextSongIndex = this.songs[activeSongIndex + 1] ? activeSongIndex + 1 : 0
+        return this.songs[nextSongIndex]
       }
     },
     methods: {
@@ -143,14 +155,23 @@
         this.$store.dispatch('setActiveSong', song)
         if (this.audioIsPlaying) {
           this.selectedSong.audio.pause()
+          // console.log('clear timeout:', this.selectedSong.timeout)
+          clearTimeout(this.selectedSong.timeout)
         }
         this.selectedSong.id = song._id
         this.selectedSong.audio = new Audio(audioSrc)
         this.selectedSong.audio.play()
         this.audioIsPlaying = true
+        this.selectedSong.timeout = setTimeout(() => {
+          this.audioIsPlaying = false
+          this.selectedSong.id = ""
+          this.play(this.nextSong, this.nextSong.audioSrc)
+        }, 30000)
+        // console.log('set timeout:', this.selectedSong.timeout)
       },
       pause(songId, audioSrc) {
         this.selectedSong.audio.pause()
+        clearTimeout(this.selectedSong.timeout)
         this.selectedSong.id = ""
         this.audioIsPlaying = false
       },
@@ -158,8 +179,7 @@
         return this.selectedSong.id != song._id
       },
       showPauseBtn(song) {
-        // return this.selectedSong.id == song.trackId && this.audioIsPlaying
-        return this.selectedSong.id == song._id && !(this.selectedSong.audio.ended || this.selectedSong.audio.paused)
+        return this.selectedSong.id == song._id && this.audioIsPlaying
       }
     }
   }
