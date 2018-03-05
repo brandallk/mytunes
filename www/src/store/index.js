@@ -227,7 +227,7 @@ export default new vuex.Store({
           console.log(err)
         })
     },
-    updatePlaylist({commit, dispatch}, playlist) {
+    updatePlaylistTitleAndImg({commit, dispatch}, playlist) {
       var playlistId = playlist._id
       var playlistChanges = {
         title: playlist.title,
@@ -239,6 +239,19 @@ export default new vuex.Store({
           console.log('updated playlist:', playlist)
           commit('setActivePlaylist', playlist)
           dispatch('updateUserPlaylists')
+        })
+    },
+    updatePlaylistSongIDs({commit, dispatch}, playlist) {
+      var playlistId = playlist._id
+      var playlistChanges = {
+        songIDs: playlist.songIDs
+      }
+      api.put(`playlists/${playlistId}`, playlistChanges)
+        .then(res => {
+          var playlist = res.data.data
+          console.log('updated playlist:', playlist)
+          commit('setActivePlaylist', playlist)
+          dispatch('getPlaylist', playlistId)
         })
     },
 

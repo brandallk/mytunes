@@ -28,6 +28,8 @@
 
     <div class="songs container-fluid bg-light py-3">
 
+      <p class="text-center text-muted font-italic"><small>(Use drag-&amp;-drop to reorder songs.)</small></p>
+
       <div class="song-header p-1 bg-light row px-4 py-3 border-bottom">
         <span class="play-btn text-dark col-1"></span>
         <span class="title text-dark col-4">Title</span>
@@ -35,7 +37,7 @@
         <span class="time text-dark col-3">Time</span>
       </div>
   
-      <div class="song p-1 row px-4 py-2 align-items-center" v-for="song in songs">
+      <div class="song p-1 row px-4 py-2 align-items-center" draggable="true" v-for="song in songs" @dragstart="dragstart(song)" @dragover.prevent="dragover" @drop="drop(song)">
         <span class="play-btn col-1"><i class="fa fa-play-circle" aria-hidden="true"></i></span>
         <span class="title col-4">{{song.title}}</span>
         <span class="album col-4">{{song.albumTitle}}</span>
@@ -56,10 +58,10 @@
     },
     data () {
       return {
-        // selectedPlaylistSongs: [],
-        // selectedSong: {},
         isPlaying: false,
-        showPlaylistEditForm: false
+        showPlaylistEditForm: false,
+        draggedSong: {},
+        dropTargetSong: {}
       }
     },
     computed: {
@@ -67,7 +69,12 @@
         return this.$store.state.activePlaylist
       },
       songs() {
-        return this.$store.state.activePlaylistSongs
+        var songIDs = this.$store.state.activePlaylistSongIDs
+        var songs = this.$store.state.activePlaylistSongs
+        var orderedSongs = songIDs.map(songID => {
+          return songs.filter(song => song._id === songID)[0]
+        })
+        return orderedSongs
       },
       activeSong() {
         return this.$store.state.activeSong
@@ -79,6 +86,31 @@
         var secs = totalSecs % 60
         var formattedSecs = secs < 10 ? "0" + secs : secs
         return `${mins}:${formattedSecs}`
+      },
+      dragstart(song) {
+        console.log('dragged song:', song.title)
+        this.draggedSong = song
+      },
+      dragover() {
+        console.log('dragover')
+      },
+      drop(song) {
+        console.log('song at drop target:', song.title)
+        this.dropTargetSong = song
+        
+        var songIDs = this.playlist.songIDs
+        var draggedSongId = this.draggedSong._id
+        var draggedSongIdIndex = songIDs.indexOf(draggedSongId)
+        var targetSongId = this.dropTargetSong._id
+        var targetSongIdIndex = songIDs.indexOf(targetSongId)
+        songIDs.splice(draggedSongIdIndex, 1)
+        songIDs.splice(targetSongIdIndex, 0, draggedSongId)
+        
+        var updatedPlaylist = this.playlist
+        updatedPlaylist._id = this.playlist._id
+        updatedPlaylist.songIDs = songIDs
+
+        this.$store.dispatch('updatePlaylistSongIDs', updatedPlaylist)
       }
     }
   }

@@ -47,7 +47,7 @@
         updatedPlaylist._id = this.playlist._id
         updatedPlaylist.title = this.editedPlaylistTitle
         updatedPlaylist.imgUrl = this.editedPlaylistImg
-        this.$store.dispatch('updatePlaylist', updatedPlaylist)
+        this.$store.dispatch('updatePlaylistTitleAndImg', updatedPlaylist)
         this.hidePlaylistEditForm()
       },
       hidePlaylistEditForm() {
