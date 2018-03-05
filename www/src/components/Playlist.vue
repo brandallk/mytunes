@@ -110,12 +110,14 @@
         return this.$store.state.activeSong
       },
       previousSong() {
-        var activeSongIndex = this.songs.indexOf(this.activeSong)
+        var activeSong = this.songs.find(song => song._id === this.activeSong._id)
+        var activeSongIndex = this.songs.indexOf(activeSong)
         var previousSongIndex = this.songs[activeSongIndex - 1] ? activeSongIndex - 1 : this.songs.length - 1
         return this.songs[previousSongIndex]
       },
       nextSong() {
-        var activeSongIndex = this.songs.indexOf(this.activeSong)
+        var activeSong = this.songs.find(song => song._id === this.activeSong._id)
+        var activeSongIndex = this.songs.indexOf(activeSong)
         var nextSongIndex = this.songs[activeSongIndex + 1] ? activeSongIndex + 1 : 0
         return this.songs[nextSongIndex]
       }
