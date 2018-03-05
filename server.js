@@ -37,14 +37,14 @@ server.use(session)
 server.use(authRoutes)
 
 // Gateway for all following routes:
-// server.use('/api/*', (req, res, next) => {
-//   if (req.method.toLowerCase() != 'get' && !req.session.uid) { // If the user isn't signed in, but made a non-GET reqest...
-//     return res.status(401).send({
-//       error: 'Please log in to continue'
-//     }) // ...don't allow it.
-//   }
-//   next() // Otherwise, send the reqest on to be handled by following routes.
-// })
+server.use('/api/*', (req, res, next) => {
+  if (req.method.toLowerCase() != 'get' && !req.session.uid) { // If the user isn't signed in, but made a non-GET reqest...
+    return res.status(401).send({
+      error: 'Please log in to continue'
+    }) // ...don't allow it.
+  }
+  next() // Otherwise, send the reqest on to be handled by following routes.
+})
 
 server.use('/api', userRoutes.router)
 server.use('/api', playlistRoutes.router)
@@ -58,12 +58,3 @@ server.use('*', (err, req, res, next) => {
 server.listen(server.get('port'), () => {
   console.log(`Server running on port ${server.get('port')}`)
 })
-
-
-// A quickie test route to see if session is working:
-// server.get('/protected', (req, res, next) => {
-//     if(req.session.uid) {
-//         return res.send({message: 'You are logged in'})
-//     }
-//     return res.status(401).send({error: 'Please log in to continue'})
-// })
