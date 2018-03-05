@@ -41,17 +41,14 @@
         selectedSong: {
           id: "",
           audio: {ended: true},
-          // timeout: ""
+          timeout: {}
         },
-        // audioIsPlaying: false
+        audioIsPlaying: false
       }
     },
     computed: {
       songs() {
         return this.$store.state.iTunesResults
-      },
-      audioIsPlaying() {
-        return !(this.selectedSong.audio.ended || this.selectedSong.audio.paused)
       }
     },
     methods: {
@@ -85,22 +82,23 @@
       play(songId, audioSrc) {
         if (this.audioIsPlaying) {
           this.selectedSong.audio.pause()
-          // console.log('timeoutId:', this.selectedSong.timeout)
-          // clearTimeout(this.selectedSong.timeout)
+          console.log('clear timeout:', this.selectedSong.timeout)
+          clearTimeout(this.selectedSong.timeout)
         }
         this.selectedSong.id = songId
         this.selectedSong.audio = new Audio(audioSrc)
         this.selectedSong.audio.play()
         this.audioIsPlaying = true
-        // this.selectedSong.timout = setTimeout(() => {
-        //   this.audioIsPlaying = false
-        //   this.selectedSong.id = ""
-        // }, 30000)
+        this.selectedSong.timeout = setTimeout(() => {
+          this.audioIsPlaying = false
+          this.selectedSong.id = ""
+        }, 30000)
+        console.log('set timeout:', this.selectedSong.timeout)
       },
       pause(songId, audioSrc) {
         this.selectedSong.audio.pause()
-        // console.log('timeoutId:', this.selectedSong.timeout)
-        // clearTimeout(this.selectedSong.timeout)
+        console.log('clear timeout:', this.selectedSong.timeout)
+        clearTimeout(this.selectedSong.timeout)
         this.selectedSong.id = ""
         this.audioIsPlaying = false
       },
@@ -108,8 +106,7 @@
         return this.selectedSong.id != song.trackId
       },
       showPauseBtn(song) {
-        // return this.selectedSong.id == song.trackId && this.audioIsPlaying
-        return this.selectedSong.id == song.trackId && !(this.selectedSong.audio.ended || this.selectedSong.audio.paused)
+        return this.selectedSong.id == song.trackId && this.audioIsPlaying
       }
     }
   }
@@ -120,7 +117,6 @@
     background-color: #f8f9fa;
   }
   .song:hover {
-    /* background-color: #8fb6cb; */
     background-color: #17a2b8;
   }
   .song:hover span {
