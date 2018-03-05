@@ -292,7 +292,7 @@ export default new vuex.Store({
           })
       }
     },
-    
+
     deleteSong({commit, dispatch}, song) {
       api.delete(`songs/${song._id}`)
         .then(res => {
@@ -301,6 +301,10 @@ export default new vuex.Store({
         .catch(err => {
           console.log(err)
         })
+    },
+
+    setActiveSong({commit, dispatch}, song) {
+      commit('setActiveSong', song)
     }
 
   }

@@ -1,5 +1,5 @@
 <template>
-  <div class="playlist">
+  <div class="playlist pb-5">
 
     <h4 class="text-center" v-if="!activeSong._id">Use 'Search' to create a playlist!</h4>
     
@@ -14,9 +14,15 @@
       <h5>{{activeSong.title}}</h5>
       <div class="controls row">
         <div class="back col-4"><i class="fas fa-step-backward"></i></div>
-        <div class="play-pause col-4">
-          <div class="play" v-if="!isPlaying"><i class="fas fa-play"></i></div>
-          <div class="pause" v-if="isPlaying"><i class="fas fa-pause"></i></div>
+        <div class="play-pause text-center col-4">
+          <!-- <div class="play" v-if="!isPlaying"><i class="fas fa-play"></i></div>
+          <div class="pause" v-if="isPlaying"><i class="fas fa-pause"></i></div> -->
+          <a href="#" class="play-btn text-info" v-show="showPlayBtn(activeSong)" @click.prevent="play(activeSong, activeSong.audioSrc)">
+            <i class="fas fa-play"></i>
+          </a>
+          <a href="#" class="pause-btn text-info" v-show="showPauseBtn(activeSong)" @click.prevent="pause(activeSong._id, activeSong.audioSrc)">
+            <i class="fas fa-pause"></i>
+          </a>
         </div>
         <div class="next col-4"><i class="fas fa-step-forward"></i></div>
       </div>
@@ -38,7 +44,12 @@
       </div>
   
       <div class="song p-1 row px-4 py-2 align-items-center" draggable="true" v-for="song in songs" @dragstart="dragstart(song)" @dragover.prevent="dragover" @drop="drop(song)">
-        <span class="play-btn col-1"><i class="fa fa-play-circle"></i></span>
+        <a href="#" class="play-btn text-info col-1" v-show="showPlayBtn(song)" @click.prevent="play(song, song.audioSrc)">
+          <i class="fa fa-play-circle"></i>
+        </a>
+        <a href="#" class="pause-btn text-info col-1" v-show="showPauseBtn(song)" @click.prevent="pause(song._id, song.audioSrc)">
+          <i class="fas fa-pause-circle"></i>
+        </a>
         <span class="title col-4">{{song.title}}</span>
         <span class="album col-4">{{song.albumTitle}}</span>
         <span class="time col-2">{{getMinsFromSecs(song.timeInSeconds)}}</span>
@@ -66,7 +77,11 @@
         isPlaying: false,
         showPlaylistEditForm: false,
         draggedSong: {},
-        dropTargetSong: {}
+        dropTargetSong: {},
+        selectedSong: {
+          id: "",
+          audio: {ended: true}
+        }
       }
     },
     computed: {
@@ -83,6 +98,9 @@
       },
       activeSong() {
         return this.$store.state.activeSong
+      },
+      audioIsPlaying() {
+        return !(this.selectedSong.audio.ended || this.selectedSong.audio.paused)
       }
     },
     methods: {
@@ -120,6 +138,28 @@
       deleteSong(song) {
         console.log('delete', song.title, song._id)
         this.$store.dispatch('deleteSong', song)
+      },
+      play(song, audioSrc) {
+        this.$store.dispatch('setActiveSong', song)
+        if (this.audioIsPlaying) {
+          this.selectedSong.audio.pause()
+        }
+        this.selectedSong.id = song._id
+        this.selectedSong.audio = new Audio(audioSrc)
+        this.selectedSong.audio.play()
+        this.audioIsPlaying = true
+      },
+      pause(songId, audioSrc) {
+        this.selectedSong.audio.pause()
+        this.selectedSong.id = ""
+        this.audioIsPlaying = false
+      },
+      showPlayBtn(song) {
+        return this.selectedSong.id != song._id
+      },
+      showPauseBtn(song) {
+        // return this.selectedSong.id == song.trackId && this.audioIsPlaying
+        return this.selectedSong.id == song._id && !(this.selectedSong.audio.ended || this.selectedSong.audio.paused)
       }
     }
   }
