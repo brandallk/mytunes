@@ -16,10 +16,12 @@ server.use(bodyParser.urlencoded({
   extended: true
 }))
 
+server.use(express.static(__dirname + "/www/dist"))
+
 // Setup for cross-origin resource sharing. (Allow front end and back
 // end on different servers to talk to each other.)
 var cors = require('cors')
-var whitelist = ['http://localhost:8080'] // Whitelist our own front-end server. (Should be stored in environment variable before production).
+var whitelist = ['http://localhost:8080', 'https://brk-mytunes.herokuapp.com/'] // Whitelist my own front-end server. (Should be stored in environment variable before production).
 var corsOptions = {
   origin: function (origin, callback) {
     var originIsWhitelisted = whitelist.indexOf(origin) !== -1 // Ensure only whitelisted request-origins are allowed.
