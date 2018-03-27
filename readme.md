@@ -24,4 +24,4 @@ A few additional features/notes:
 
 The app was built with NodeJS, ExpressJS, MongoDB, and Vue/Vuex.
 
-This app is a collaborative project built by me, [Randy King](https://github.com/brandallk), while a full-stack web developer student at the Boise CodeWorks bootcamp.
+This app was built by me, [Randy King](https://github.com/brandallk), while a full-stack web developer student at the Boise CodeWorks bootcamp.
