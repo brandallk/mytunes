@@ -1,9 +1,9 @@
 ### MyTunes
 
-##### Search iTunes Catalog. Create, Play, and Manage Your Own Song Playlists.
+##### Search the iTunes Catalog. Create, Play, and Manage Your Own Song Playlists.
 
 Link to the live project (on Heroku): [MyTunes](https://brk-mytunes.herokuapp.com/#/)
-(Note: For a quick preview of the app, you can log in as test-user John Doe -- email: fake1@fake.com, password: password. This test-user has a few boards and collaborators already.)
+(Note: For a quick preview of the app, you can log in as test-user John Doe -- email: fake1@fake.com, password: password. This test-user has a few playlists already.)
 
 ##### About the project
 
